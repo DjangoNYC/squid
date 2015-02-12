@@ -9,7 +9,7 @@ class Member(TimeStampedModel):
     """
     meetup_id = models.PositiveIntegerField(max_length=32)
     name = models.CharField(max_length=128)
-    photo = models.ImageField(null=True, blank=True)
+    # photo = models.ImageField(null=True, blank=True)
     join_date = models.DateTimeField(null=True, blank=True)
 
 

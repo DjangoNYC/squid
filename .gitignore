@@ -56,3 +56,6 @@ target/
 
 # VIM swap
 *.sw*
+
+# DB
+*.sqlite3
