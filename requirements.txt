@@ -1,6 +1,15 @@
 Django==1.7.4
+Pillow==2.7.0
+Unipath==1.1
 argparse==1.2.1
+django-extensions==1.2.5
+-e git+https://github.com/lightstrike/django-meetup.git@fadf7599225d65e11a20e745857eb45bbaceda19#egg=django_meetup-master
 django-model-utils==2.2
+ipdb==0.8
+ipython==2.4.0
+python-dateutil==2.1
+pytz==2014.7
 requests==2.5.1
+simplejson==3.3.2
+six==1.9.0
 wsgiref==0.1.2
--e git+https://github.com/lightstrike/django-meetup.git#egg=django-meetup
