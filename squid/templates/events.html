@@ -3,7 +3,7 @@
   {% block content %}
   {% for event in event_list %}
   <div class="event-tile">
-    <a href="{% url 'event_detail' event.id %}"><h4>{{ event }}</h4></a>
+    <a href="{% url 'event_detail' event.id %}"><h4>{{ event }} - {{ event.date }}</h4></a>
     {% if event.meetup_url %}
     <a href="{{ event.meetup_url }}" target="_blank"><p>Meetup Page</p></a>
     {% endif %}

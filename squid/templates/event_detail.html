@@ -16,7 +16,7 @@
   <h2>Tonight's Djangonauts</h2>
   {% for rsvp in event.rsvps.all %}
   <div class="event-member">
-    <a href="{% url 'event_detail' event.id %}"><h4>{{ rsvp.member.name }}</h4></a>
+    <a href="{% url 'event_detail' event.id %}"><h4>{{ rsvp.member.name }}</h4><span>RSVP: {{ rsvp.join_date }}</span></a>
     <p>{{ rsvp.worked_on|default:"" }}</p>
   </div>
   {% endfor %} 
