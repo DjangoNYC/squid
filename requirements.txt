@@ -3,3 +3,4 @@ argparse==1.2.1
 django-model-utils==2.2
 requests==2.5.1
 wsgiref==0.1.2
+-e git+https://github.com/lightstrike/django-meetup.git#egg=django-meetup

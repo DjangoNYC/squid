@@ -7,9 +7,22 @@ https://docs.djangoproject.com/en/1.7/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.7/ref/settings/
 """
+import os
+from django.core.exceptions import ImproperlyConfigured
+
+def get_env_setting(setting, default=None):
+    """
+    Get the environment setting or return exception
+    """
+    try:
+        var = os.environ.get(setting, default) if default else os.environ[setting]
+        return var
+    except KeyError:
+        error_msg = "Set the %s env variable" % setting
+        raise ImproperlyConfigured(error_msg)
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -36,6 +49,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
     'core',
 )
 
@@ -82,3 +96,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+
+MEETUP_API_KEY = get_env_setting('DJANGO_MEETUP_API')
