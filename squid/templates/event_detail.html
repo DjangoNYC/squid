@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+  {% block content %}
+  <div class="event-details">
+    <h1>{{ event.title }}</h1>
+    <h2>{{ event.venue }}</h2>
+    {% if event.venue.latitude %}
+    <iframe
+  width="600"
+  height="450"
+  frameborder="0" style="border:0"
+  src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDfcnVK7ugirBykr2wGNlUSuikQPz1S_nM&amp;q={{ event.venue.latitude }},{{ event.venue.longitude }}">
+</iframe>
+  {% endif %}
+  </div>
+  <h2>Tonight's Djangonauts</h2>
+  {% for rsvp in event.rsvps.all %}
+  <div class="event-member">
+    <a href="{% url 'event_detail' event.id %}"><h4>{{ rsvp.member.name }}</h4></a>
+    <p>{{ rsvp.worked_on|default:"" }}</p>
+  </div>
+  {% endfor %} 
+  {% endblock content %}

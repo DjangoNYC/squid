@@ -22,6 +22,9 @@ class Event(TimeStampedModel):
     title = models.CharField(max_length=128)
     date = models.DateTimeField(null=True, blank=True)
 
+    class Meta:
+        ordering = ['-date']
+
     def __str__(self):
         return self.title
 

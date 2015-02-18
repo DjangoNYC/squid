@@ -16,13 +16,21 @@ class MemberView(ListView):
 	model = Member
 	template_name = "members.html"
 
-class EventView(ListView):
+
+class EventListView(ListView):
 	model = Event
 	template_name = "events.html"
+
+
+class EventDetailView(DetailView):
+	model = Event
+	template_name = "event_detail.html"
+
 
 class VenueView(ListView):
 	model = Venue
 	template_name = "venues.html"
+
 
 class MemberRSVPView(ListView):
 	model = MemberRSVP
