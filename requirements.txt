@@ -13,3 +13,4 @@ requests==2.5.1
 simplejson==3.3.2
 six==1.9.0
 wsgiref==0.1.2
+sass==2.3
