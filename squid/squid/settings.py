@@ -1,9 +1,7 @@
 """
 Django settings for squid project.
 
-For more information on this file, see
-https://docs.djangoproject.com/en/1.7/topics/settings/
-
+For more information on this file, see https://docs.djangoproject.com/en/1.7/topics/settings/ 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.7/ref/settings/
 """
@@ -101,5 +99,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Additional locations of static files
+STATICFILES_DIRS = (
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+    PROJECT_ROOT.child("static_source"),# An absolute path: /foo/bar/baz.py
+)
 
 MEETUP_API_KEY = get_env_setting('DJANGO_MEETUP_API')

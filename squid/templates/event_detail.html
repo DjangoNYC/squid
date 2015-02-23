@@ -1,24 +1,23 @@
 {% extends 'base.html' %}
 
   {% block content %}
-  <div class="event-details">
-    <h1>{{ event.title }}</h1>
-    <h2>{{ event.venue }}</h2>
-    {% if event.venue.latitude %}
-    <iframe
-  width="600"
-  height="450"
-  frameborder="0" style="border:0"
-  src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDfcnVK7ugirBykr2wGNlUSuikQPz1S_nM&amp;q={{ event.venue.latitude }},{{ event.venue.longitude }}">
-</iframe>
-  {% endif %}
+  <div class="row">
+      <div class="event-details">
+        <h1>{{ event.title }}</h1>
+        <h2>{{ event.venue }}</h2>
+      </div>
   </div>
-  <h2>Tonight's Djangonauts</h2>
-  {% for rsvp in event.rsvps.all %}
-  <div class="event-member">
-    <img src="{{ rsvp.member.thumb_link }}" />
-    <h4>{{ rsvp.member.name }}</h4><span>Member since {{ rsvp.member.join_date|date:"Y" }}</span>
-    <p>{{ rsvp.worked_on|default:"" }}</p>
-  </div>
+  <div class="row">
+  <h2 class="col-md-12">Tonight's Djangonauts</h2>
+  {% for rsvp in rsvp_list %}
+  <form class="event-member col-md-3" method="post">
+    {% csrf_token %}
+    <h4>{{ rsvp.instance.member.name }}</h4>
+    <span>Member since {{ rsvp.member.join_date|date:"Y" }}</span>
+    {{ rsvp.id }}
+    {{ rsvp.worked_on }}
+    <p style="display: none">{{ rsvp.instance.worked_on }}</p>
+  </form>
   {% endfor %} 
+  </div>
   {% endblock content %}

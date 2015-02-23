@@ -34,8 +34,9 @@ class Command(BaseCommand):
 
         def add_created(counter, created):
             if created:
-                counter += 1
-
+                return counter + 1
+            else:
+                return counter
 
         def save_member(member_json):
             joined = datetime.fromtimestamp(member_json['joined']/1000)
@@ -79,9 +80,9 @@ class Command(BaseCommand):
 
         # 1. Get or create Event model
         # keep track of how many events created
-        events_created = 0
         venues_created = 0
         rsvps_created = 0
+        events_created = 0
 
         # FIXME: Add a while loop for 'next' in meta
         for record in events_json['results']:
@@ -91,7 +92,7 @@ class Command(BaseCommand):
                 longitude=record['venue']['lon'],
                 latitude=record['venue']['lat']
                 )
-            add_created(venues_created, new_venue)
+            venues_created = add_created(venues_created, new_venue)
 
             # convert epoch time to datetime (UTC)
             # NOTE: meetup stores epoch time in milliseconds
@@ -105,7 +106,7 @@ class Command(BaseCommand):
                 date=event_time
                 )
 
-            add_created(events_created, new_event)
+            events_created = add_created(events_created, new_event)
 
             rsvps_json = get_meetup_json('/2/rsvps', event_id=event.meetup_id)
 
@@ -119,6 +120,8 @@ class Command(BaseCommand):
                     name=rsvp['member']['name']
                     )
 
+                members_created = add_created(members_created, new_member)
+
                 rsvp_time = datetime.fromtimestamp(rsvp['created']/1000)
                 member_rsvp, new_rsvp = MemberRSVP.objects.get_or_create(
                     meetup_id=rsvp['rsvp_id'],
@@ -127,7 +130,7 @@ class Command(BaseCommand):
                     join_date=rsvp_time
                     )
 
-                add_created(rsvps_created, new_rsvp)
+                rsvps_created = add_created(rsvps_created, new_rsvp)
 
         def print_update(model, retrieved, created):
             print("{retrieved} past {model} retrieved, {created} {model} created".format(
