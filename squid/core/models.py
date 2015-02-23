@@ -10,6 +10,7 @@ class Member(TimeStampedModel):
     meetup_id = models.CharField(max_length=32)
     name = models.CharField(max_length=128)
     join_date = models.DateTimeField(null=True, blank=True)
+    thumb_link = models.ImageField(max_length=256)
 
 
 class Event(TimeStampedModel):
