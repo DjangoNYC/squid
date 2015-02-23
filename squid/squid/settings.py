@@ -100,4 +100,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# Additional locations of static files
+STATICFILES_DIRS = (
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
+    PROJECT_ROOT.child("static_source"),# An absolute path: /foo/bar/baz.py
+)
+
 MEETUP_API_KEY = get_env_setting('DJANGO_MEETUP_API')
