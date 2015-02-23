@@ -54,9 +54,15 @@ docs/_build/
 target/
 
 
-# VIM swap
+# VIM/EMACS temp files
 *.sw*
+*_flymake*
+*.\#*
 
 # DB
 *.sqlite3
 *.DS_Store
+
+# common Django artifacts
+static/
+src/
