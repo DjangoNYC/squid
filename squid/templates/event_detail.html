@@ -10,14 +10,43 @@
   <div class="row">
   <h2 class="col-md-12">Tonight's Djangonauts</h2>
   {% for rsvp in rsvp_list %}
-  <form class="event-member col-md-3" method="post">
+  
+  <form class="event-member col-xs-12 col-sm-12 col-md-3" method="post">
     {% csrf_token %}
-    <h4>{{ rsvp.instance.member.name }}</h4>
-    <span>Member since {{ rsvp.member.join_date|date:"Y" }}</span>
-    {{ rsvp.id }}
-    {{ rsvp.worked_on }}
-    <p style="display: none">{{ rsvp.instance.worked_on }}</p>
+    <div class="member-box {% if rsvp.instance.worked_on %}has-text{% endif %}">
+        <div class="row">
+            <div class="col-xs-12 col-sm-4 col-md-4">
+                <img class="member-thumbnail" style="background-image: url('{{ rsvp.instance.member.thumb_link }}');" />
+            </div>
+            <div class="col-xs-12 col-sm-8 col-md-8">
+                <h4 class="member-name">{{ rsvp.instance.member.name }} ({{ rsvp.instance.member.join_date|date:"Y" }})</h4>
+                {{ rsvp.id }}
+                {% if rsvp.instance.worked_on %}    
+                <h2 class="worked-on-text">{{ rsvp.instance.worked_on }}</h2>
+                <p class="worked-on-input" style="display: none;">{{ rsvp.worked_on }}</p>
+                <button class="submit-work" style="display: none;">Submit</button>
+                {% else %}
+                <p class="worked-on-input">{{ rsvp.worked_on }}</p>
+                <button class="submit-work">Submit</button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
   </form>
   {% endfor %} 
   </div>
   {% endblock content %}
+
+  {% block media %}
+  <script type="text/javascript">
+  $(function() {
+      $('.member-box.has-text').click(function() {
+          $(this).find('.worked-on-text').hide();
+          $(this).find('.worked-on-input').show();
+          $(this).find('.submit-work').show();
+          // FIXME: Isn't working
+          $(this).find('.worked-on-input').focus();
+      });
+  });
+  </script>
+  {% endblock media %}
