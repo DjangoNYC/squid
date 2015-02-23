@@ -32,6 +32,40 @@ class Command(BaseCommand):
             # FIXME: add some exception handling
             return json.loads(request.content)
 
+        def add_created(counter, created):
+            if created:
+                counter += 1
+
+
+        def save_member(member_json):
+            joined = datetime.fromtimestamp(member_json['joined']/1000)
+            if 'photo' in member_json.keys():
+                photo_url = member_json['photo']['thumb_link']
+            else:
+                # FIXME: need to add better none case
+                photo_url = 'https://meetup.com'
+
+            member, new_member = Member.objects.get_or_create(
+                meetup_id=member_json['id'],
+                name=member_json['name'],
+                thumb_link=photo_url,
+                join_date=joined
+                )
+
+            return new_member
+
+        members_created = 0
+        for offset in xrange(0, 8):
+            # Get all past events
+            members_json = get_meetup_json('/2/members', group_urlname='django-nyc', offset=offset)
+
+            # if not members_json['meta']['next'] == '':
+                
+            for member in members_json['results']:
+                new_member = save_member(member)
+                # FIXME: Something's up here
+                # members_created = add_created(members_created, new_member)
+
         # Get all past events
         events_json = get_meetup_json('/2/events', group_urlname='django-nyc', status='past')
 
@@ -47,12 +81,7 @@ class Command(BaseCommand):
         # keep track of how many events created
         events_created = 0
         venues_created = 0
-        members_created = 0
         rsvps_created = 0
-
-        def add_created(counter, created):
-            if created:
-                counter += 1
 
         # FIXME: Add a while loop for 'next' in meta
         for record in events_json['results']:
@@ -89,8 +118,6 @@ class Command(BaseCommand):
                     meetup_id=rsvp['member']['member_id'],
                     name=rsvp['member']['name']
                     )
-
-                add_created(members_created, new_member)
 
                 rsvp_time = datetime.fromtimestamp(rsvp['created']/1000)
                 member_rsvp, new_rsvp = MemberRSVP.objects.get_or_create(
