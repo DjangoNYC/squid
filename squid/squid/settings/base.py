@@ -24,7 +24,7 @@ def get_env_setting(setting, default=None):
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 from unipath import Path
-PROJECT_ROOT = Path(__file__).ancestor(2)
+PROJECT_ROOT = Path(__file__).ancestor(3)
 TEMPLATE_DIRS = (
     PROJECT_ROOT.child('templates'),
 )
