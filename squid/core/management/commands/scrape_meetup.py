@@ -32,18 +32,25 @@ class Command(BaseCommand):
             # FIXME: add some exception handling
             return json.loads(request.content)
 
-        def add_created(counter, created):
+        # keep track of how many events created
+        created_counters = {
+            'members': 0,
+            'venues': 0,
+            'rsvps': 0,
+            'events': 0,
+        }
+
+        def add_created(counter_name, created):
+            counter = created_counters[counter_name]
             if created:
-                return counter + 1
-            else:
-                return counter
+                counter = counter + 1
 
         def save_member(member_json):
             joined = datetime.fromtimestamp(member_json['joined']/1000)
             if 'photo' in member_json.keys():
                 photo_url = member_json['photo']['photo_link']
             else:
-                photo_url = None
+                photo_url = ''
 
             member, new_member = Member.objects.get_or_create(
                 meetup_id=member_json['id'],
@@ -54,91 +61,87 @@ class Command(BaseCommand):
 
             return new_member
 
-        members_created = 0
+        def process_events(events_json):
+            # FIXME: Add a while loop for 'next' in meta
+            for record in events_json['results']:
+                """
+                For each event:
+                1. Get or create event's location as Venue model
+                2. Get or create Event model
+                3. Get or create each event attendees as Member model
+                4. Get or create each event RSVP as MemberRSVP model
+                """
+
+                # 1. Get or create Venue model
+                venue, new_venue = Venue.objects.get_or_create(
+                    meetup_id=record['venue']['id'],
+                    name=record['venue']['name'],
+                    longitude=record['venue']['lon'],
+                    latitude=record['venue']['lat']
+                    )
+                add_created('venues', new_venue)
+
+                # 2. Get or create Event model
+                # convert epoch time to datetime (UTC)
+                # NOTE: meetup stores epoch time in milliseconds
+                # FIXME: make timezone aware
+                event_time = datetime.fromtimestamp(record['time']/1000)
+                event, new_event = Event.objects.get_or_create(
+                    venue=venue,
+                    meetup_id=record['id'],
+                    meetup_url=record['event_url'],
+                    title=record['name'],
+                    date=event_time
+                    )
+                add_created('events', new_event)
+
+                rsvps_json = get_meetup_json('/2/rsvps', event_id=event.meetup_id)
+
+                # FIXME: with proper exception handling
+                if 'problem' in rsvps_json.keys():
+                    rsvps_json['results'] = list()
+
+                for rsvp in rsvps_json['results']:
+                    member, new_member = Member.objects.get_or_create(
+                        meetup_id=rsvp['member']['member_id'],
+                        name=rsvp['member']['name']
+                        )
+                    add_created('members', new_member)
+
+                    rsvp_time = datetime.fromtimestamp(rsvp['created']/1000)
+                    member_rsvp, new_rsvp = MemberRSVP.objects.get_or_create(
+                        meetup_id=rsvp['rsvp_id'],
+                        member=member,
+                        event=event,
+                        join_date=rsvp_time
+                        )
+
+                    add_created('rsvps', new_rsvp)
+
+        # Get all members
+        # FIXME: Add while loop for next in meta logic 
         for offset in xrange(0, 8):
-            # Get all past events
             members_json = get_meetup_json('/2/members', group_urlname='django-nyc', offset=offset)
 
-            # if not members_json['meta']['next'] == '':
-                
             for member in members_json['results']:
                 new_member = save_member(member)
                 # FIXME: Something's up here
                 # members_created = add_created(members_created, new_member)
 
-        # Get all past events
-        events_json = get_meetup_json('/2/events', group_urlname='django-nyc', status='past')
+        # Get all past events plus next upcoming event
+        past_events_json = get_meetup_json('/2/events', group_urlname='django-nyc', status='past')
+        process_events(past_events_json)
+        upcoming_events_json = get_meetup_json('/2/events', group_urlname='django-nyc', status='upcoming', page='1')
+        process_events(upcoming_events_json)
 
-        """
-        For each event:
-        1. Get or create Event model
-        2. Get or create event's location as Venue model
-        3. Get or create each event attendees as Member model
-        4. Get or create each event RSVP as MemberRSVP model
-        """
-
-        # 1. Get or create Event model
-        # keep track of how many events created
-        venues_created = 0
-        rsvps_created = 0
-        events_created = 0
-
-        # FIXME: Add a while loop for 'next' in meta
-        for record in events_json['results']:
-            venue, new_venue = Venue.objects.get_or_create(
-                meetup_id=record['venue']['id'],
-                name=record['venue']['name'],
-                longitude=record['venue']['lon'],
-                latitude=record['venue']['lat']
-                )
-            venues_created = add_created(venues_created, new_venue)
-
-            # convert epoch time to datetime (UTC)
-            # NOTE: meetup stores epoch time in milliseconds
-            # FIXME: make timezone aware
-            event_time = datetime.fromtimestamp(record['time']/1000)
-            event, new_event = Event.objects.get_or_create(
-                venue=venue,
-                meetup_id=record['id'],
-                meetup_url=record['event_url'],
-                title=record['name'],
-                date=event_time
-                )
-
-            events_created = add_created(events_created, new_event)
-
-            rsvps_json = get_meetup_json('/2/rsvps', event_id=event.meetup_id)
-
-            # FIXME: with proper exception handling
-            if 'problem' in rsvps_json.keys():
-                rsvps_json['results'] = list()
-
-            for rsvp in rsvps_json['results']:
-                member, new_member = Member.objects.get_or_create(
-                    meetup_id=rsvp['member']['member_id'],
-                    name=rsvp['member']['name']
-                    )
-
-                members_created = add_created(members_created, new_member)
-
-                rsvp_time = datetime.fromtimestamp(rsvp['created']/1000)
-                member_rsvp, new_rsvp = MemberRSVP.objects.get_or_create(
-                    meetup_id=rsvp['rsvp_id'],
-                    member=member,
-                    event=event,
-                    join_date=rsvp_time
-                    )
-
-                rsvps_created = add_created(rsvps_created, new_rsvp)
-
-        def print_update(model, retrieved, created):
+        def print_update(model, retrieved):
             print("{retrieved} past {model} retrieved, {created} {model} created".format(
               retrieved=retrieved,
               model=model,
-              created=created
+              created=created_counters[model]
               ))
 
-        print_update('events', events_json['meta']['count'], events_created)
-        print_update('venues', Venue.objects.all().count(), venues_created)
-        print_update('members', Member.objects.all().count(), members_created)
-        print_update('rsvps', MemberRSVP.objects.all().count(), rsvps_created)
+        print_update('events', Event.objects.all().count())
+        print_update('venues', Venue.objects.all().count())
+        print_update('members', Member.objects.all().count())
+        print_update('rsvps', MemberRSVP.objects.all().count())
