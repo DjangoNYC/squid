@@ -41,10 +41,9 @@ class Command(BaseCommand):
         def save_member(member_json):
             joined = datetime.fromtimestamp(member_json['joined']/1000)
             if 'photo' in member_json.keys():
-                photo_url = member_json['photo']['thumb_link']
+                photo_url = member_json['photo']['photo_link']
             else:
-                # FIXME: need to add better none case
-                photo_url = 'https://meetup.com'
+                photo_url = None
 
             member, new_member = Member.objects.get_or_create(
                 meetup_id=member_json['id'],

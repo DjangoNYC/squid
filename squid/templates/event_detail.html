@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
+{% load static %}
 
   {% block content %}
   <div class="row">
-      <div class="event-details">
-        <h1>{{ event.title }}</h1>
-        <h2>{{ event.venue }}</h2>
+      <div class="event-details col-md-12">
+        <h1 class="title">{{ event.title }}</h1>
+        <a href="http://www.openstreetmap.org/?mlat={{ event.venue.latitude }}&mlon={{ event.venue.longitude}}#map=15/{{ event.venue.latitude }}/{{ event.venue.longitude}}" target="_blank"><h2 class="venue">{{ event.venue }}</h2></a>
+        <h2 class="col-md-12">Tonight's Djangonauts</h2>
       </div>
   </div>
   <div class="row">
-  <h2 class="col-md-12">Tonight's Djangonauts</h2>
   {% for rsvp in rsvp_list %}
   
   <form class="event-member col-xs-12 col-sm-12 col-md-3" method="post">
@@ -16,7 +17,13 @@
     <div class="member-box {% if rsvp.instance.worked_on %}has-text{% endif %}">
         <div class="row">
             <div class="col-xs-12 col-sm-4 col-md-4">
-                <img class="member-thumbnail" style="background-image: url('{{ rsvp.instance.member.thumb_link }}');" />
+                <img class="member-thumbnail" 
+                     {% if rsvp.instance.member.thumb_link %}
+                     style="background-image: url('{{ rsvp.instance.member.thumb_link }}');" 
+                     {% else %}
+                     style="background-image: url('{% static 'img/django_pony.png' %}');"
+                     {% endif %}
+                     />
             </div>
             <div class="col-xs-12 col-sm-8 col-md-8">
                 <h4 class="member-name">{{ rsvp.instance.member.name }} ({{ rsvp.instance.member.join_date|date:"Y" }})</h4>

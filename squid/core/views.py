@@ -9,7 +9,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.shortcuts import render
 
-from django.views.generic import ListView, DetailView, UpdateView
+from django.views.generic import ListView, DetailView, UpdateView, RedirectView
 
 from django.shortcuts import get_object_or_404
 
@@ -27,6 +27,12 @@ class EventListView(ListView):
     template_name = "events.html"
 
 
+class EventLandingView(RedirectView):
+    def get_redirect_url(self, *args, **kwargs):
+        latest_event = Event.objects.latest('date') 
+        return reverse('event_detail', kwargs={'pk': latest_event.id})
+
+        
 class EventDetailView(DetailView):
     model = Event
     template_name = "event_detail.html"
@@ -35,7 +41,7 @@ class EventDetailView(DetailView):
         context = super(EventDetailView, self).get_context_data(**kwargs)
         event = self.get_object()
         # build rsvp form list 
-        rsvp_list = [EventAttendeeForm(instance=rsvp) for rsvp in event.rsvps.all()]
+        rsvp_list = [EventAttendeeForm(instance=rsvp) for rsvp in event.rsvps.all().order_by('member__name')]
         context['rsvp_list'] = rsvp_list
         return context
 
