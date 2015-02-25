@@ -41,7 +41,7 @@ class EventDetailView(DetailView):
         context = super(EventDetailView, self).get_context_data(**kwargs)
         event = self.get_object()
         # build rsvp form list 
-        rsvp_list = [EventAttendeeForm(instance=rsvp) for rsvp in event.rsvps.all().order_by('member__name')]
+        rsvp_list = [EventAttendeeForm(instance=rsvp) for rsvp in event.rsvps.all().order_by('worked_on', 'member__name')]
         context['rsvp_list'] = rsvp_list
         return context
 
