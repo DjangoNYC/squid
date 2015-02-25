@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}
+{{ event.title }}
+{% endblock title %}
+
+{% block extra_head %}
+<meta http-equiv="refresh" content="300" >
+{% endblock extra_head %}
+
   {% block content %}
   <div class="row">
       <div class="event-details col-md-12">

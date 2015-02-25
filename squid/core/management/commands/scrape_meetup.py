@@ -55,9 +55,13 @@ class Command(BaseCommand):
             member, new_member = Member.objects.get_or_create(
                 meetup_id=member_json['id'],
                 name=member_json['name'],
-                thumb_link=photo_url,
                 join_date=joined
                 )
+            
+            # allow for changes in photo url
+            if not photo_url == member.thumb_link:
+                member.thumb_link = photo_url
+                member.save() 
 
             return new_member
 

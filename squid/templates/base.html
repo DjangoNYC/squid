@@ -8,13 +8,15 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>Squid List</title>
+    <title>{% block title %}{% endblock %}</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     {% load static %}
     <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="{% static 'css/flexboxgrid.css'%}">
 	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    {% block extra_head %}
+    {% endblock extra_head %}
   </head>
   <body>
   {% block content %}
