@@ -121,9 +121,3 @@ STATICFILES_DIRS = (
 )
 
 MEETUP_API_KEY = get_env_setting('DJANGO_MEETUP_API')
-
-# Adding SASS
-
-COMPRESS_PRECOMPILERS = (
-    ('text/scss', 'sass --scss --compass {infile} {outfile}'),
-)
