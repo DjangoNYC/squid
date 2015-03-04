@@ -6,7 +6,7 @@
 {% endblock title %}
 
 {% block extra_head %}
-<meta http-equiv="refresh" content="300" >
+<meta http-equiv="refresh" content="180" >
 {% endblock extra_head %}
 
   {% block content %}
@@ -62,6 +62,11 @@
           // FIXME: Isn't working
           $(this).find('.worked-on-input').focus();
       });
+      window.onbeforeunload = function() {
+            if ($("textarea").is(":focus")) {
+                return "We want to refresh the page to show updates. Are you ready?";
+            }
+      };
   });
   </script>
   {% endblock media %}

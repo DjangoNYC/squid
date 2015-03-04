@@ -53,7 +53,7 @@ class MemberRSVP(TimeStampedModel):
     member = models.ForeignKey('core.Member', related_name="events")
     event = models.ForeignKey('core.Event', related_name="rsvps")
     join_date = models.DateTimeField(null=True, blank=True)
-    worked_on = models.CharField(max_length=128, null=True, blank=True)
+    worked_on = models.CharField(max_length=2048, null=True, blank=True)
 
     def __str__(self):
         return "{member} RSVP to {event}".format(
