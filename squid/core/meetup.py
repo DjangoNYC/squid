@@ -88,7 +88,6 @@ def process_events(events_json):
             date=event_time
             )
 
-        import ipdb; ipdb.set_trace()
         rsvps_json = get_meetup_json('/2/rsvps', event_id=event.meetup_id)
 
         # FIXME: with proper exception handling
