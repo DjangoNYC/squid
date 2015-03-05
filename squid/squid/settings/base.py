@@ -53,6 +53,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'compressor',
     'core',
 )
 
@@ -121,3 +122,14 @@ STATICFILES_DIRS = (
 )
 
 MEETUP_API_KEY = get_env_setting('DJANGO_MEETUP_API')
+
+# Adding Compress Precompiler for libsass
+COMPRESS_ROOT = PROJECT_ROOT.child('static_source')
+
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+)
+
+STATICFILES_FINDERS = (
+	('compressor.finders.CompressorFinder'),
+)

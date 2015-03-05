@@ -1,0 +1,40 @@
+.event-details {
+  text-align: center; }
+
+.event-member {
+  margin-bottom: 20px;
+  cursor: pointer; }
+
+.member-box {
+  background: #F1FFF7;
+  color: #0c3c26; }
+
+.member-box:hover, .member-box:focus, .member-box:active, .member-box.has-text {
+  background: #44B78B;
+  color: white; }
+
+.member-thumbnail {
+  height: 200px;
+  background-size: cover;
+  background-position: center; }
+
+.member-name {
+  word-wrap: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 0; }
+
+.worked-on-input {
+  margin: 0; }
+
+textarea[name="worked_on"] {
+  max-width: 85%; }
+
+.submit-work {
+  width: 85%;
+  color: white;
+  border: 1px solid white;
+  background: #44B78B;
+  font-weight: 600;
+  padding: 10px 0; }
